@@ -252,6 +252,38 @@ namespace Microsoft.AspNet.Mvc.Core
             Assert.Equal("<label for=\"HtmlEncode[[unknownKey]]\">HtmlEncode[[unknownKey]]</label>", HtmlContentUtilities.HtmlContentToString(result));
         }
 
+        [Fact]
+        public void LabelHelpers_UsesSpecifiedLabelText()
+        {
+            // Arrange
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+
+            // Act
+            var labelResult = helper.Label("Property1", "Hello");
+            var labelForResult = helper.LabelFor(m => m.Property1, "Hello");
+            var labelForModelResult = helper.LabelForModel("Hello");
+
+            // Assert
+            Assert.Equal("<label for=\"HtmlEncode[[Property1]]\">HtmlEncode[[Hello]]</label>", HtmlContentUtilities.HtmlContentToString(labelResult));
+            Assert.Equal("<label for=\"HtmlEncode[[Property1]]\">HtmlEncode[[Hello]]</label>", HtmlContentUtilities.HtmlContentToString(labelForResult));
+            Assert.Equal("<label for=\"\">HtmlEncode[[Hello]]</label>", HtmlContentUtilities.HtmlContentToString(labelForModelResult));
+        }
+
+        [Fact]
+        public void LabelHelpers_DisplaysSpecifiedHtmlAttributes()
+        {
+            // Arrange
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+
+            // Act
+            var labelForResult = helper.LabelFor(m => m.Property1, new { attr="value" });
+            var labelForModelResult = helper.LabelForModel("Hello", new { attr="value" });
+
+            // Assert
+            Assert.Equal("<label attr=\"HtmlEncode[[value]]\" for=\"HtmlEncode[[Property1]]\">HtmlEncode[[Property1]]</label>", HtmlContentUtilities.HtmlContentToString(labelForResult));
+            Assert.Equal("<label attr=\"HtmlEncode[[value]]\" for=\"\">HtmlEncode[[Hello]]</label>", HtmlContentUtilities.HtmlContentToString(labelForModelResult));
+        }
+
         private sealed class InnerClass
         {
             public int Id { get; set; }
