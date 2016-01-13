@@ -4,6 +4,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
 {
@@ -13,18 +14,24 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
     public class MemoryPoolViewBufferScope : IViewBufferScope, IDisposable
     {
         public static readonly int SegmentSize = 512;
-        private readonly ArrayPool<ViewBufferValue> _pool;
+        private readonly ArrayPool<ViewBufferValue> _viewBufferPool;
+        private readonly ArrayPool<char> _charPool;
         private List<ViewBufferValue[]> _leased;
         private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of <see cref="MemoryPoolViewBufferScope"/>.
         /// </summary>
-        /// <param name="pool">The <see cref="ArrayPool{ViewBufferValue}"/> for creating
-        /// <see cref="ViewBufferValue"/> instances.</param>
-        public MemoryPoolViewBufferScope(ArrayPool<ViewBufferValue> pool)
+        /// <param name="viewBufferPool">
+        /// The <see cref="ArrayPool{ViewBufferValue}"/> for creating <see cref="ViewBufferValue"/> instances.
+        /// </param>
+        /// <param name="charPool">
+        /// The <see cref="ArrayPool{char}"/> for creating <see cref="ViewBufferTextWriter"/> instances.
+        /// </param>
+        public MemoryPoolViewBufferScope(ArrayPool<ViewBufferValue> viewBufferPool, ArrayPool<char> charPool)
         {
-            _pool = pool;
+            _viewBufferPool = viewBufferPool;
+            _charPool = charPool;
         }
 
         /// <inheritdoc />
@@ -44,16 +51,26 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
 
             try
             {
-                segment = _pool.Rent(SegmentSize);
+                segment = _viewBufferPool.Rent(SegmentSize);
                 _leased.Add(segment);
             }
             catch when (segment != null)
             {
-                _pool.Return(segment);
+                _viewBufferPool.Return(segment);
                 throw;
             }
 
             return segment;
+        }
+
+        public ViewBufferTextWriter CreateWriter(TextWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            return new ViewBufferTextWriter(_charPool, writer);
         }
 
         /// <inheritdoc />
@@ -70,7 +87,7 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
 
                 for (var i = 0; i < _leased.Count; i++)
                 {
-                    _pool.Return(_leased[i]);
+                    _viewBufferPool.Return(_leased[i]);
                 }
 
                 _leased.Clear();

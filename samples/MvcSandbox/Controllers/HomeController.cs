@@ -7,6 +7,7 @@ namespace MvcSandbox.Controllers
 {
     public class HomeController : Controller
     {
+        [ValidateAntiForgeryToken]
         public IActionResult Index()
         {
             return View();
