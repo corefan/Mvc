@@ -346,29 +346,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         [Fact]
-        public void PasswordHelpers_UsesSpecifiedExpression()
+        public void Password_UsesSpecifiedExpressionButIgnoresValue()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var passwordResult = helper.Password("Property1");
-            var passwordForResult = helper.PasswordFor(m => m.Property1);
 
             // Assert
             Assert.Equal(
                 "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[password]]\" />",
                 HtmlContentUtilities.HtmlContentToString(passwordResult));
+        }
+
+        [Fact]
+        public void PasswordFor_UsesSpecifiedExpressionButIgnoresValue()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
+            var passwordForResult = helper.PasswordFor(m => m.Property1);
+
+            // Assert
             Assert.Equal(
                 "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[password]]\" />",
                 HtmlContentUtilities.HtmlContentToString(passwordForResult));
         }
 
         [Fact]
-        public void PasswordHelpers_UsesSpecifiedValue()
+        public void Password_UsesSpecifiedValue()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var passwordResult = helper.Password("Property1", value: "myvalue");
@@ -430,6 +450,11 @@ namespace Microsoft.AspNet.Mvc.Rendering
             public string Property5 { get; set; }
 
             public List<string> Property6 { get; } = new List<string>();
+        }
+
+        private class TestModel
+        {
+            public string Property1 { get; set; }
         }
     }
 }

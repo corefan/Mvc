@@ -1,8 +1,10 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.TestCommon;
+using Microsoft.AspNet.Mvc.ViewFeatures;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.Core
@@ -13,29 +15,49 @@ namespace Microsoft.AspNet.Mvc.Core
     public class HtmlHelperTextBoxExtensionsTest
     {
         [Fact]
-        public void TextBoxHelpers_UsesSpecifiedExpression()
+        public void TextBox_UsesSpecifiedExpression()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textBoxResult = helper.TextBox("Property1");
+
+            // Assert
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"HtmlEncode[[propValue]]\" />",
+                HtmlContentUtilities.HtmlContentToString(textBoxResult));
+        }
+
+        [Fact]
+        public void TextBoxFor_UsesSpecifiedExpression()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
             var textBoxForResult = helper.TextBoxFor(m => m.Property1);
 
             // Assert
             Assert.Equal(
-                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"\" />",
-                HtmlContentUtilities.HtmlContentToString(textBoxResult));
-            Assert.Equal(
-                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"\" />",
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"HtmlEncode[[propValue]]\" />",
                 HtmlContentUtilities.HtmlContentToString(textBoxForResult));
         }
 
         [Fact]
-        public void TextBoxHelpers_UsesSpecifiedValue()
+        public void TextBox_UsesSpecifiedValue()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textBoxResult = helper.TextBox("Property1", value: "myvalue");
@@ -47,10 +69,13 @@ namespace Microsoft.AspNet.Mvc.Core
         }
 
         [Fact]
-        public void TextBoxHelpers_UsesSpecifiedFormat()
+        public void TextBox_UsesSpecifiedFormat()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textBoxResult = helper.TextBox("Property1", value: "myvalue", format: "prefix: {0}");
@@ -62,22 +87,44 @@ namespace Microsoft.AspNet.Mvc.Core
         }
 
         [Fact]
-        public void TextBoxHelpers_UsesSpecifiedHtmlAttributes()
+        public void TextBox_UsesSpecifiedHtmlAttributes()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textBoxResult = helper.TextBox("Property1", value: "myvalue", htmlAttributes: new { attr = "value" });
-            var textBoxForResult = helper.TextBoxFor(m => m.Property1, htmlAttributes: new { attr = "value" });
 
             // Assert
             Assert.Equal(
                 "<input attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"HtmlEncode[[myvalue]]\" />",
                 HtmlContentUtilities.HtmlContentToString(textBoxResult));
+        }
+
+        [Fact]
+        public void TextBoxFor_UsesSpecifiedHtmlAttributes()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
+            var textBoxForResult = helper.TextBoxFor(m => m.Property1, htmlAttributes: new { attr = "value" });
+
+            // Assert
             Assert.Equal(
-                "<input attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"\" />",
+                "<input attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[text]]\" value=\"HtmlEncode[[propValue]]\" />",
                 HtmlContentUtilities.HtmlContentToString(textBoxForResult));
+        }
+
+        private class TestModel
+        {
+            public string Property1 { get; set; }
         }
     }
 }

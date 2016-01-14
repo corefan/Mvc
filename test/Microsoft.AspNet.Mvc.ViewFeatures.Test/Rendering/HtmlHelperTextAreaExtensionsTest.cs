@@ -1,8 +1,10 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.TestCommon;
+using Microsoft.AspNet.Mvc.ViewFeatures;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.Core
@@ -13,21 +15,38 @@ namespace Microsoft.AspNet.Mvc.Core
     public class HtmlHelperTextAreaExtensionsTest
     {
         [Fact]
-        public void TextAreaHelpers_UsesSpecifiedExpression()
+        public void TextArea_UsesSpecifiedExpression()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textAreaResult = helper.TextArea("Property1");
+
+            // Assert
+            Assert.Equal(
+                "<textarea id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\nHtmlEncode[[propValue]]</textarea>",
+                HtmlContentUtilities.HtmlContentToString(textAreaResult));
+        }
+
+        [Fact]
+        public void TextAreaFor_UsesSpecifiedExpression()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
             var textAreaForResult = helper.TextAreaFor(m => m.Property1);
 
             // Assert
             Assert.Equal(
-                "<textarea id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\n</textarea>",
-                HtmlContentUtilities.HtmlContentToString(textAreaResult));
-            Assert.Equal(
-                "<textarea id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\n</textarea>",
+                "<textarea id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\nHtmlEncode[[propValue]]</textarea>",
                 HtmlContentUtilities.HtmlContentToString(textAreaForResult));
         }
 
@@ -35,7 +54,10 @@ namespace Microsoft.AspNet.Mvc.Core
         public void TextAreaHelpers_UsesSpecifiedValue()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textAreaResult = helper.TextArea("Property1", value: "myvalue");
@@ -47,41 +69,74 @@ namespace Microsoft.AspNet.Mvc.Core
         }
 
         [Fact]
-        public void TextAreaHelpers_UsesSpecifiedHtmlAttributes()
+        public void TextArea_UsesSpecifiedHtmlAttributes()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var textAreaResult = helper.TextArea("Property1", htmlAttributes: new { attr = "value" });
+
+            // Assert
+            Assert.Equal(
+                "<textarea attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\nHtmlEncode[[propValue]]</textarea>",
+                HtmlContentUtilities.HtmlContentToString(textAreaResult));
+        }
+
+        [Fact]
+        public void TextAreaFor_UsesSpecifiedHtmlAttributes()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
             var textAreaForResult = helper.TextAreaFor(m => m.Property1, htmlAttributes: new { attr = "value" });
 
             // Assert
             Assert.Equal(
-                "<textarea attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\n</textarea>",
-                HtmlContentUtilities.HtmlContentToString(textAreaResult));
-            Assert.Equal(
-                "<textarea attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\n</textarea>",
+                "<textarea attr=\"HtmlEncode[[value]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\">\r\nHtmlEncode[[propValue]]</textarea>",
                 HtmlContentUtilities.HtmlContentToString(textAreaForResult));
         }
 
         [Fact]
-        public void TextAreaHelpers_UsesSpecifiedRowsAndColumns()
+        public void TextArea_UsesSpecifiedRowsAndColumns()
         {
             // Arrange
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
 
             // Act
             var textAreaResult = helper.TextArea("Property1", value: "myvalue", rows: 1, columns: 2, htmlAttributes: new { attr = "value" });
-            var textAreaForResult = helper.TextAreaFor(m => m.Property1, rows: 1, columns: 2, htmlAttributes: new { attr = "value" });
 
             // Assert
             Assert.Equal(
                 "<textarea attr=\"HtmlEncode[[value]]\" columns=\"HtmlEncode[[2]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" rows=\"HtmlEncode[[1]]\">\r\nHtmlEncode[[myvalue]]</textarea>",
                 HtmlContentUtilities.HtmlContentToString(textAreaResult));
+        }
+
+        [Fact]
+        public void TextAreaFor_UsesSpecifiedRowsAndColumns()
+        {
+            // Arrange
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+
+            // Act
+            var textAreaForResult = helper.TextAreaFor(m => m.Property1, rows: 1, columns: 2, htmlAttributes: new { attr = "value" });
+
+            // Assert
             Assert.Equal(
                 "<textarea attr=\"HtmlEncode[[value]]\" columns=\"HtmlEncode[[2]]\" id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" rows=\"HtmlEncode[[1]]\">\r\n</textarea>",
                 HtmlContentUtilities.HtmlContentToString(textAreaForResult));
+        }
+
+        private class TestModel
+        {
+            public string Property1 { get; set; }
         }
     }
 }

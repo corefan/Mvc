@@ -650,7 +650,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         [Fact]
-        public void CheckboxHelpers_UsesSpecifiedExpression()
+        public void Checkbox_UsesSpecifiedExpression()
         {
             // Arrange
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
@@ -666,7 +666,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         [Fact]
-        public void CheckboxHelpers_UsesSpecifiedIsChecked()
+        public void Checkbox_UsesSpecifiedIsChecked()
         {
             // Arrange
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
@@ -682,7 +682,26 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         [Fact]
-        public void CheckboxHelpers_UsesSpecifiedHtmlAttributes()
+        public void Checkbox_UsesSpecifiedIsCheckedRegardlessOfExpressionValue()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = true };
+
+            // Act
+            var checkboxResult = helper.CheckBox("Property1", isChecked: false);
+
+            // Assert
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[checkbox]]\" value=\"HtmlEncode[[true]]\" />" +
+                "<input name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[false]]\" />",
+                HtmlContentUtilities.HtmlContentToString(checkboxResult));
+        }
+
+        [Fact]
+        public void Checkbox_UsesSpecifiedHtmlAttributes()
         {
             // Arrange
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();

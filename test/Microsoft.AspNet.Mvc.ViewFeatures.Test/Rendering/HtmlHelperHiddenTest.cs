@@ -836,29 +836,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
         }
 
         [Fact]
-        public void HiddenHelpers_UsesSpecifiedExpression()
+        public void Hidden_UsesSpecifiedExpression()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var hiddenResult = helper.Hidden("Property1");
+
+            // Assert
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[propValue]]\" />",
+                HtmlContentUtilities.HtmlContentToString(hiddenResult));
+        }
+
+        [Fact]
+        public void HiddenFor_UsesSpecifiedExpression()
+        {
+            // Arrange
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
+
+            // Act
             var hiddenForResult = helper.HiddenFor(m => m.Property1);
 
             // Assert
             Assert.Equal(
-                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"\" />",
-                HtmlContentUtilities.HtmlContentToString(hiddenResult));
-            Assert.Equal(
-                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"\" />",
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[propValue]]\" />",
                 HtmlContentUtilities.HtmlContentToString(hiddenForResult));
         }
 
         [Fact]
-        public void HiddenHelpers_UsesSpecifiedValue()
+        public void Hidden_UsesSpecifiedValue()
         {
             // Arrange
-            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+            var metadataProvider = new EmptyModelMetadataProvider();
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper(new ViewDataDictionary<TestModel>(metadataProvider));
+            helper.ViewContext.ClientValidationEnabled = false;
+            helper.ViewData.Model = new TestModel { Property1 = "propValue" };
 
             // Act
             var hiddenResult = helper.Hidden("Property1", value: "myvalue");
@@ -932,6 +952,11 @@ namespace Microsoft.AspNet.Mvc.Rendering
             public string Property5 { get; set; }
 
             public List<string> Property6 { get; } = new List<string>();
+        }
+
+        private class TestModel
+        {
+            public string Property1 { get; set; }
         }
     }
 }
