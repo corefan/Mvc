@@ -259,9 +259,9 @@ namespace Microsoft.AspNet.Mvc.Core
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
 
             // Act
-            var labelResult = helper.Label("Property1", "Hello");
-            var labelForResult = helper.LabelFor(m => m.Property1, "Hello");
-            var labelForModelResult = helper.LabelForModel("Hello");
+            var labelResult = helper.Label("Property1", labelText: "Hello");
+            var labelForResult = helper.LabelFor(m => m.Property1, labelText: "Hello");
+            var labelForModelResult = helper.LabelForModel(labelText: "Hello");
 
             // Assert
             Assert.Equal("<label for=\"HtmlEncode[[Property1]]\">HtmlEncode[[Hello]]</label>", HtmlContentUtilities.HtmlContentToString(labelResult));
@@ -276,8 +276,8 @@ namespace Microsoft.AspNet.Mvc.Core
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
 
             // Act
-            var labelForResult = helper.LabelFor(m => m.Property1, new { attr="value" });
-            var labelForModelResult = helper.LabelForModel("Hello", new { attr="value" });
+            var labelForResult = helper.LabelFor(m => m.Property1, htmlAttributes: new { attr="value" });
+            var labelForModelResult = helper.LabelForModel(labelText: "Hello", htmlAttributes: new { attr="value" });
 
             // Assert
             Assert.Equal("<label attr=\"HtmlEncode[[value]]\" for=\"HtmlEncode[[Property1]]\">HtmlEncode[[Property1]]</label>", HtmlContentUtilities.HtmlContentToString(labelForResult));

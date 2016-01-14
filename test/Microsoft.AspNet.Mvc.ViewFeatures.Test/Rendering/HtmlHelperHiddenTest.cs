@@ -835,6 +835,40 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.Equal(expected, HtmlContentUtilities.HtmlContentToString(result));
         }
 
+        [Fact]
+        public void HiddenHelpers_UsesSpecifiedExpression()
+        {
+            // Arrange
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+
+            // Act
+            var hiddenResult = helper.Hidden("Property1");
+            var hiddenForResult = helper.HiddenFor(m => m.Property1);
+
+            // Assert
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"\" />",
+                HtmlContentUtilities.HtmlContentToString(hiddenResult));
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"\" />",
+                HtmlContentUtilities.HtmlContentToString(hiddenForResult));
+        }
+
+        [Fact]
+        public void HiddenHelpers_UsesSpecifiedValue()
+        {
+            // Arrange
+            var helper = DefaultTemplatesUtilities.GetHtmlHelper();
+
+            // Act
+            var hiddenResult = helper.Hidden("Property1", value: "myvalue");
+
+            // Assert
+            Assert.Equal(
+                "<input id=\"HtmlEncode[[Property1]]\" name=\"HtmlEncode[[Property1]]\" type=\"HtmlEncode[[hidden]]\" value=\"HtmlEncode[[myvalue]]\" />",
+                HtmlContentUtilities.HtmlContentToString(hiddenResult));
+        }
+
         private static ViewDataDictionary<HiddenModel> GetViewDataWithNullModelAndNonNullViewData()
         {
             return new ViewDataDictionary<HiddenModel>(new EmptyModelMetadataProvider())
