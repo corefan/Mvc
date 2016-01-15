@@ -83,6 +83,12 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         public string Route { get; set; }
 
         /// <summary>
+        /// The http method to use.
+        /// </summary>
+        /// <remarks>Passed through to the generated HTML in all cases.</remarks>
+        public string Method { get; set; }
+
+        /// <summary>
         /// Additional parameters for the route.
         /// </summary>
         [HtmlAttributeName(RouteValuesDictionaryName, DictionaryAttributePrefix = RouteValuesPrefix)]
@@ -125,10 +131,10 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
             }
 
             var antiforgeryDefault = true;
-            if (output.Attributes.ContainsName("method"))
+            if (Method != null)
             {
-                var methodValue = output.Attributes["method"].Value.ToString();
-                if (string.Equals(methodValue, FormMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase))
+                output.CopyHtmlAttribute(nameof(Method), context);
+                if (string.Equals(Method, FormMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase))
                 {
                     antiforgeryDefault = false;
                 }

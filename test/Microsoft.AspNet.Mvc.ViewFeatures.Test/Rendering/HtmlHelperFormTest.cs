@@ -151,7 +151,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 controllerName: null,
                 routeValues: null,
                 method: FormMethod.Post,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: null);
 
             // Assert
@@ -201,7 +201,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 controllerName: null,
                 routeValues: null,
                 method: FormMethod.Post,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -254,7 +254,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 controllerName,
                 routeValues,
                 method,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -302,7 +302,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName,
                 routeValues,
                 method,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -433,7 +433,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(writer);
 
             // Act & Assert
-            using (var form = htmlHelper.BeginForm(FormMethod.Post, suppressAntiforgery: null, htmlAttributes: null))
+            using (var form = htmlHelper.BeginForm(FormMethod.Post, antiforgery: null, htmlAttributes: null))
             {
                 Assert.True(viewContext.FormContext.HasAntiforgeryToken);
             }
@@ -516,7 +516,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(writer);
 
             // Act & Assert
-            using (var form = htmlHelper.BeginForm(FormMethod.Post, suppressAntiforgery: true, htmlAttributes: null))
+            using (var form = htmlHelper.BeginForm(FormMethod.Post, antiforgery: false, htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);
             }
@@ -555,7 +555,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(writer);
 
             // Act & Assert
-            using (var form = htmlHelper.BeginForm(FormMethod.Get, suppressAntiforgery: null, htmlAttributes: null))
+            using (var form = htmlHelper.BeginForm(FormMethod.Get, antiforgery: null, htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);
             }
@@ -595,7 +595,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(writer);
 
             // Act & Assert
-            using (var form = htmlHelper.BeginForm(FormMethod.Post, suppressAntiforgery: true, htmlAttributes: null))
+            using (var form = htmlHelper.BeginForm(FormMethod.Post, antiforgery: false, htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);
 
@@ -679,7 +679,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName: null,
                 routeValues: null,
                 method: FormMethod.Post,
-                suppressAntiforgery: null,
+                antiforgery: null,
                 htmlAttributes: null))
             {
                 Assert.True(viewContext.FormContext.HasAntiforgeryToken);
@@ -723,7 +723,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName: null,
                 routeValues: null,
                 method: FormMethod.Post,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);
@@ -766,7 +766,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName: null,
                 routeValues: null,
                 method: FormMethod.Get,
-                suppressAntiforgery: null,
+                antiforgery: null,
                 htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);

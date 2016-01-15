@@ -338,7 +338,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginForm(suppressAntiforgery: false);
+            var mvcForm = htmlHelper.BeginForm(antiforgery: true);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -371,7 +371,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginForm(suppressAntiforgery: true);
+            var mvcForm = htmlHelper.BeginForm(antiforgery: false);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -497,7 +497,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginForm(method, suppressAntiforgery: false, htmlAttributes: htmlAttributes);
+            var mvcForm = htmlHelper.BeginForm(method, antiforgery: true, htmlAttributes: htmlAttributes);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -533,7 +533,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginForm(method, suppressAntiforgery: true, htmlAttributes: htmlAttributes);
+            var mvcForm = htmlHelper.BeginForm(method, antiforgery: false, htmlAttributes: htmlAttributes);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -836,7 +836,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 controllerName,
                 routeValues: null,
                 method: method,
-                suppressAntiforgery: false,
+                antiforgery: true,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -880,7 +880,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 controllerName,
                 routeValues: null,
                 method: method,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -956,7 +956,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginRouteForm(routeValues, suppressAntiforgery: false);
+            var mvcForm = htmlHelper.BeginRouteForm(routeValues, antiforgery: true);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -990,7 +990,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginRouteForm(routeValues, suppressAntiforgery: true);
+            var mvcForm = htmlHelper.BeginRouteForm(routeValues, antiforgery: false);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -1065,7 +1065,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginRouteForm(routeName, suppressAntiforgery: false);
+            var mvcForm = htmlHelper.BeginRouteForm(routeName, antiforgery: true);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -1099,7 +1099,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
             Assert.NotNull(builder);
 
             // Act
-            var mvcForm = htmlHelper.BeginRouteForm(routeName, suppressAntiforgery: true);
+            var mvcForm = htmlHelper.BeginRouteForm(routeName, antiforgery: false);
 
             // Assert
             Assert.NotNull(mvcForm);
@@ -1313,7 +1313,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName,
                 routeValues: null,
                 method: method,
-                suppressAntiforgery: false,
+                antiforgery: true,
                 htmlAttributes: htmlAttributes);
 
             // Assert
@@ -1354,7 +1354,7 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeName,
                 routeValues: null,
                 method: method,
-                suppressAntiforgery: true,
+                antiforgery: false,
                 htmlAttributes: htmlAttributes);
 
             // Assert

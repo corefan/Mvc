@@ -112,12 +112,12 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         {
             // Arrange
             var viewContext = CreateViewContext();
+            var expectedAttribute = new TagHelperAttribute("method", method.ToString().ToLowerInvariant());
             var context = new TagHelperContext(
                 allAttributes: new ReadOnlyTagHelperAttributeList<IReadOnlyTagHelperAttribute>(
-                    Enumerable.Empty<IReadOnlyTagHelperAttribute>()),
+                    new ReadOnlyTagHelperAttributeList<IReadOnlyTagHelperAttribute>(new List<IReadOnlyTagHelperAttribute> { expectedAttribute })),
                 items: new Dictionary<object, object>(),
                 uniqueId: "test");
-            var expectedAttribute = new TagHelperAttribute("method", method.ToString().ToLowerInvariant());
             var output = new TagHelperOutput(
                 "form",
                 attributes: new TagHelperAttributeList(),
@@ -127,7 +127,6 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
                     tagHelperContent.SetContent("Something");
                     return Task.FromResult<TagHelperContent>(tagHelperContent);
                 });
-            output.Attributes.Add(expectedAttribute);
             var generator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
             generator
                 .Setup(mock => mock.GenerateForm(
@@ -146,6 +145,7 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
                 Action = "Index",
                 Antiforgery = antiforgery,
                 ViewContext = viewContext,
+                Method = method.ToString().ToLowerInvariant()
             };
 
             // Act
