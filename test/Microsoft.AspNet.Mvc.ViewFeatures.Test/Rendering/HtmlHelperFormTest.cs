@@ -565,6 +565,47 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 writer.GetStringBuilder().ToString());
         }
 
+        [Theory]
+        [InlineData(FormMethod.Get)]
+        [InlineData(FormMethod.Post)]
+        public void BeginForm_EndForm_DoesNotSuppressAntiforgeryTokenWhenAntiforgeryIsTrue(FormMethod method)
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginForm(method, antiforgery: true, htmlAttributes: null))
+            {
+                Assert.True(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form><antiforgery></antiforgery></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
         // This is an integration for suppressing implicit antiforgery token added by BeginForm.
         [Fact]
         public void BeginForm_EndForm_SuppressAntiforgeryToken_WithExplicitCallToAntiforgery()
@@ -774,6 +815,51 @@ namespace Microsoft.AspNet.Mvc.Rendering
 
             Assert.Equal(
                 "<form></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
+        [Theory]
+        [InlineData(FormMethod.Get)]
+        [InlineData(FormMethod.Post)]
+        public void BeginRouteForm_EndForm_DoesNotSuppressAntiforgeryTokenWhenAntiforgeryIsTrue(FormMethod method)
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateRouteForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginRouteForm(
+                routeName: null,
+                routeValues: null,
+                method: method,
+                antiforgery: true,
+                htmlAttributes: null))
+            {
+                Assert.True(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form><antiforgery></antiforgery></form>",
                 writer.GetStringBuilder().ToString());
         }
 

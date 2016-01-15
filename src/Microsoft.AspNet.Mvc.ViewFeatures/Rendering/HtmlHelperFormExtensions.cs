@@ -45,8 +45,8 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <param name="htmlHelper">The <see cref="IHtmlHelper"/> instance this method extends.</param>
         /// <param name="antiforgery">
         /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
-        /// If <c>false</c> suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
-        /// By default, &lt;form&gt; elements will include an antiforgery token only if
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token only if
         /// <paramref name="method"/> is not <see cref="FormMethod.Get"/>.
         /// </param>
         /// <returns>
@@ -144,8 +144,8 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <param name="method">The HTTP method for processing the form, either GET or POST.</param>
         /// <param name="antiforgery">
         /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
-        /// If <c>false</c> suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
-        /// By default, &lt;form&gt; elements will include an antiforgery token only if
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token only if
         /// <paramref name="method"/> is not <see cref="FormMethod.Get"/>.
         /// </param>
         /// <param name="htmlAttributes">
@@ -448,8 +448,8 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// </param>
         /// <param name="antiforgery">
         /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
-        /// If <c>false</c> suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
-        /// By default, &lt;form&gt; elements will include an antiforgery token only if
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token only if
         /// <paramref name="method"/> is not <see cref="FormMethod.Get"/>.
         /// </param>
         /// <returns>
@@ -508,8 +508,8 @@ namespace Microsoft.AspNet.Mvc.Rendering
         /// <param name="routeName">The name of the route.</param>
         /// <param name="antiforgery">
         /// If <c>true</c>, &lt;form&gt; elements will include an antiforgery token.
-        /// If <c>false</c> suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
-        /// By default, &lt;form&gt; elements will include an antiforgery token only if
+        /// If <c>false</c>, suppresses the generation an &lt;input&gt; of type "hidden" with an antiforgery token.
+        /// If <c>null</c>, &lt;form&gt; elements will include an antiforgery token only if
         /// <paramref name="method"/> is not <see cref="FormMethod.Get"/>.
         /// </param>
         /// <returns>

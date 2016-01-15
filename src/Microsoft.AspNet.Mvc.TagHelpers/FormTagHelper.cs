@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Razor.TagHelpers;
@@ -83,9 +84,10 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         public string Route { get; set; }
 
         /// <summary>
-        /// The http method to use.
+        /// The HTTP method to use.
         /// </summary>
         /// <remarks>Passed through to the generated HTML in all cases.</remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string Method { get; set; }
 
         /// <summary>
@@ -129,16 +131,12 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
             {
                 throw new ArgumentNullException(nameof(output));
             }
-
-            var antiforgeryDefault = true;
             if (Method != null)
             {
                 output.CopyHtmlAttribute(nameof(Method), context);
-                if (string.Equals(Method, FormMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase))
-                {
-                    antiforgeryDefault = false;
-                }
             }
+
+            var antiforgeryDefault = true;
 
             // If "action" is already set, it means the user is attempting to use a normal <form>.
             if (output.Attributes.ContainsName(HtmlActionAttributeName))
@@ -209,6 +207,11 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
                 {
                     output.MergeAttributes(tagBuilder);
                     output.PostContent.AppendHtml(tagBuilder.InnerHtml);
+                }
+
+                if (string.Equals(Method, FormMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    antiforgeryDefault = false;
                 }
             }
 
