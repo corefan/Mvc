@@ -397,10 +397,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     null))  // htmlAttributes
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -437,10 +441,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     htmlAttributes))
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -673,10 +681,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     null))  // htmlAttributes
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -715,10 +727,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     null))  // htmlAttributes
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
                 .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
                 .Returns(HtmlString.Empty)
                 .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -757,10 +773,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     htmlAttributes))
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -1145,10 +1165,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     null))  // htmlAttributes
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -1185,10 +1209,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     null))  // htmlAttributes
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);
@@ -1225,10 +1253,14 @@ namespace Microsoft.AspNet.Mvc.Rendering
                     htmlAttributes))
                 .Returns(tagBuilder)
                 .Verifiable();
-            htmlGenerator
-                .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
-                .Returns(HtmlString.Empty)
-                .Verifiable();
+
+            if (method != FormMethod.Get)
+            {
+                htmlGenerator
+                    .Setup(g => g.GenerateAntiforgery(htmlHelper.ViewContext))
+                    .Returns(HtmlString.Empty)
+                    .Verifiable();
+            }
 
             // Guards
             Assert.NotNull(htmlHelper.ViewContext);

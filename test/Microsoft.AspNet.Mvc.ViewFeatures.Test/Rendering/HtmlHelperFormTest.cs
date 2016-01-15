@@ -404,6 +404,45 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 writer.GetStringBuilder().ToString());
         }
 
+        [Fact]
+        public void BeginForm_EndForm_RendersAntiforgeryTokenWhenMethodIsPost()
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginForm(FormMethod.Post, suppressAntiforgery: null, htmlAttributes: null))
+            {
+                Assert.True(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form><antiforgery></antiforgery></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
         // This is an integration for the implicit antiforgery token added by BeginForm.
         [Fact]
         public void BeginForm_EndForm_RendersAntiforgeryToken_WithExplicitCallToAntiforgery()
@@ -478,6 +517,45 @@ namespace Microsoft.AspNet.Mvc.Rendering
 
             // Act & Assert
             using (var form = htmlHelper.BeginForm(FormMethod.Post, suppressAntiforgery: true, htmlAttributes: null))
+            {
+                Assert.False(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
+        [Fact]
+        public void BeginForm_EndForm_SuppressAntiforgeryTokenWhenMethodIsGet()
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginForm(FormMethod.Get, suppressAntiforgery: null, htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);
             }
@@ -569,6 +647,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 writer.GetStringBuilder().ToString());
         }
 
+        [Fact]
+        public void BeginRouteForm_EndForm_RendersAntiforgeryTokenWhenMethodIsPost()
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateRouteForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginRouteForm(
+                routeName: null,
+                routeValues: null,
+                method: FormMethod.Post,
+                suppressAntiforgery: null,
+                htmlAttributes: null))
+            {
+                Assert.True(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form><antiforgery></antiforgery></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
         // This is an integration for suppressing implicit antiforgery token added by BeginRouteForm.
         [Fact]
         public void BeginRouteForm_EndForm_SuppressAntiforgeryToken()
@@ -603,6 +724,49 @@ namespace Microsoft.AspNet.Mvc.Rendering
                 routeValues: null,
                 method: FormMethod.Post,
                 suppressAntiforgery: true,
+                htmlAttributes: null))
+            {
+                Assert.False(viewContext.FormContext.HasAntiforgeryToken);
+            }
+
+            Assert.Equal(
+                "<form></form>",
+                writer.GetStringBuilder().ToString());
+        }
+
+        [Fact]
+        public void BeginRouteForm_EndForm_SuppressAntiforgeryTokenWhenMethodIsGet()
+        {
+            // Arrange
+            var htmlGenerator = new Mock<IHtmlGenerator>(MockBehavior.Strict);
+            htmlGenerator
+                .Setup(g => g.GenerateRouteForm(
+                    It.IsAny<ViewContext>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>(),
+                    It.IsAny<string>(),
+                    It.IsAny<object>()))
+                .Returns(new TagBuilder("form"));
+
+            htmlGenerator
+                .Setup(g => g.GenerateAntiforgery(It.IsAny<ViewContext>()))
+                .Returns(new TagBuilder("antiforgery"));
+
+            var htmlHelper = DefaultTemplatesUtilities.GetHtmlHelper(htmlGenerator.Object);
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(s => s.GetService(typeof(HtmlEncoder))).Returns(new HtmlTestEncoder());
+            var viewContext = htmlHelper.ViewContext;
+            viewContext.HttpContext.RequestServices = serviceProvider.Object;
+
+            var writer = viewContext.Writer as StringWriter;
+            Assert.NotNull(writer);
+
+            // Act & Assert
+            using (var form = htmlHelper.BeginRouteForm(
+                routeName: null,
+                routeValues: null,
+                method: FormMethod.Get,
+                suppressAntiforgery: null,
                 htmlAttributes: null))
             {
                 Assert.False(viewContext.FormContext.HasAntiforgeryToken);

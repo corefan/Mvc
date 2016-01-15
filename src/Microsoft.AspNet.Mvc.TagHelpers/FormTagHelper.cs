@@ -68,7 +68,8 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
         /// <summary>
         /// Whether the antiforgery token should be generated.
         /// </summary>
-        /// <value>Defaults to <c>false</c> if user provides an <c>action</c> attribute; <c>true</c> otherwise.</value>
+        /// <value>Defaults to <c>false</c> if user provides an <c>action</c> attribute
+        /// or if the <c>method</c> is <see cref="FormMethod.Get"/>; <c>true</c> otherwise.</value>
         [HtmlAttributeName(AntiforgeryAttributeName)]
         public bool? Antiforgery { get; set; }
 
@@ -124,6 +125,14 @@ namespace Microsoft.AspNet.Mvc.TagHelpers
             }
 
             var antiforgeryDefault = true;
+            if (output.Attributes.ContainsName("method"))
+            {
+                var methodValue = output.Attributes["method"].Value.ToString();
+                if (string.Equals(methodValue, FormMethod.Get.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    antiforgeryDefault = false;
+                }
+            }
 
             // If "action" is already set, it means the user is attempting to use a normal <form>.
             if (output.Attributes.ContainsName(HtmlActionAttributeName))
