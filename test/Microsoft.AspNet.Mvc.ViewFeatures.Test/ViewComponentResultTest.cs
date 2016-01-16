@@ -524,6 +524,7 @@ namespace Microsoft.AspNet.Mvc
             services.AddSingleton<IViewComponentInvokerFactory, DefaultViewComponentInvokerFactory>();
             services.AddSingleton<ITypeActivatorCache, DefaultTypeActivatorCache>();
             services.AddSingleton<IViewComponentActivator, DefaultViewComponentActivator>();
+            services.AddSingleton<IViewComponentFactory, DefaultViewComponentFactory>();
             services.AddSingleton<IViewComponentDescriptorProvider>(new FixedSetViewComponentDescriptorProvider(descriptors));
             services.AddSingleton<IModelMetadataProvider, EmptyModelMetadataProvider>();
             services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
@@ -572,22 +573,6 @@ namespace Microsoft.AspNet.Mvc
             }
         }
 
-        private class TextViewComponent : ViewComponent
-        {
-            public HtmlString Invoke(string name)
-            {
-                return new HtmlString("Hello, " + name);
-            }
-        }
-
-        private class AsyncTextViewComponent : ViewComponent
-        {
-            public Task<HtmlString> InvokeAsync(string name)
-            {
-                return Task.FromResult(new HtmlString("Hello-Async, " + name));
-            }
-        }
-
         private static string ReadBody(HttpResponse response)
         {
             response.Body.Seek(0, SeekOrigin.Begin);
@@ -596,6 +581,22 @@ namespace Microsoft.AspNet.Mvc
             {
                 return reader.ReadToEnd();
             }
+        }
+    }
+
+    public class TextViewComponent : ViewComponent
+    {
+        public HtmlString Invoke(string name)
+        {
+            return new HtmlString("Hello, " + name);
+        }
+    }
+
+    public class AsyncTextViewComponent : ViewComponent
+    {
+        public Task<HtmlString> InvokeAsync(string name)
+        {
+            return Task.FromResult(new HtmlString("Hello-Async, " + name));
         }
     }
 }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Html;
 using Microsoft.AspNet.Mvc.Controllers;
 using Microsoft.AspNet.Mvc.Diagnostics;
-using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Mvc.ViewFeatures.Logging;
 using Microsoft.Extensions.Logging;
@@ -21,8 +20,7 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
     /// </summary>
     public class DefaultViewComponentInvoker : IViewComponentInvoker
     {
-        private readonly ITypeActivatorCache _typeActivatorCache;
-        private readonly IViewComponentActivator _viewComponentActivator;
+        private readonly IViewComponentFactory _viewComponentFactory;
         private readonly DiagnosticSource _diagnosticSource;
         private readonly ILogger _logger;
 
@@ -30,23 +28,17 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
         /// Initializes a new instance of <see cref="DefaultViewComponentInvoker"/>.
         /// </summary>
         /// <param name="typeActivatorCache">Caches factories for instantiating view component instances.</param>
-        /// <param name="viewComponentActivator">The <see cref="IViewComponentActivator"/>.</param>
+        /// <param name="viewComponentFactory">The <see cref="IViewComponentFactory"/>.</param>
         /// <param name="diagnosticSource">The <see cref="DiagnosticSource"/>.</param>
         /// <param name="logger">The <see cref="ILogger"/>.</param>
         public DefaultViewComponentInvoker(
-            ITypeActivatorCache typeActivatorCache,
-            IViewComponentActivator viewComponentActivator,
+            IViewComponentFactory viewComponentFactory,
             DiagnosticSource diagnosticSource,
             ILogger logger)
         {
-            if (typeActivatorCache == null)
+            if (viewComponentFactory == null)
             {
-                throw new ArgumentNullException(nameof(typeActivatorCache));
-            }
-
-            if (viewComponentActivator == null)
-            {
-                throw new ArgumentNullException(nameof(viewComponentActivator));
+                throw new ArgumentNullException(nameof(viewComponentFactory));
             }
 
             if (diagnosticSource == null)
@@ -59,8 +51,7 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
                 throw new ArgumentNullException(nameof(logger));
             }
 
-            _typeActivatorCache = typeActivatorCache;
-            _viewComponentActivator = viewComponentActivator;
+            _viewComponentFactory = viewComponentFactory;
             _diagnosticSource = diagnosticSource;
             _logger = logger;
         }
@@ -97,24 +88,9 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
             await result.ExecuteAsync(context);
         }
 
-        private object CreateComponent(ViewComponentContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            var services = context.ViewContext.HttpContext.RequestServices;
-            var component = _typeActivatorCache.CreateInstance<object>(
-                services,
-                context.ViewComponentDescriptor.Type);
-            _viewComponentActivator.Activate(component, context);
-            return component;
-        }
-
         private async Task<IViewComponentResult> InvokeAsyncCore(ViewComponentContext context)
         {
-            var component = CreateComponent(context);
+            var component = _viewComponentFactory.CreateViewComponent(context);
 
             using (_logger.ViewComponentScope(context))
             {
@@ -131,13 +107,15 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
                 _logger.ViewComponentExecuted(context, startTimestamp, viewComponentResult);
                 _diagnosticSource.AfterViewComponent(context, viewComponentResult, component);
 
+                _viewComponentFactory.ReleaseViewComponent(context, component);
+
                 return viewComponentResult;
             }
         }
 
         private IViewComponentResult InvokeSyncCore(ViewComponentContext context)
         {
-            var component = CreateComponent(context);
+            var component = _viewComponentFactory.CreateViewComponent(context);
 
             using (_logger.ViewComponentScope(context))
             {
@@ -157,6 +135,8 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
                 }
                 catch (TargetInvocationException ex)
                 {
+                    _viewComponentFactory.ReleaseViewComponent(context, component);
+
                     // Preserve callstack of any user-thrown exceptions.
                     var exceptionInfo = ExceptionDispatchInfo.Capture(ex.InnerException);
                     exceptionInfo.Throw();
@@ -166,6 +146,8 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
                 var viewComponentResult = CoerceToViewComponentResult(result);
                 _logger.ViewComponentExecuted(context, startTimestamp, viewComponentResult);
                 _diagnosticSource.AfterViewComponent(context, viewComponentResult, component);
+
+                _viewComponentFactory.ReleaseViewComponent(context, component);
 
                 return viewComponentResult;
             }
