@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Reflection;
 using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
 using Microsoft.AspNet.Routing;
@@ -26,12 +27,16 @@ namespace Microsoft.AspNet.Mvc.Controllers
                 RequestServices = serviceProvider.Object
             };
             var activator = new ServiceBasedControllerActivator();
-            var actionContext = new ActionContext(httpContext,
-                                                  new RouteData(),
-                                                  new ActionDescriptor());
+            var actionContext = new ControllerContext(new ActionContext(
+                httpContext,
+                new RouteData(),
+                new ControllerActionDescriptor
+                {
+                    ControllerTypeInfo = typeof(DIController).GetTypeInfo()
+                }));
 
             // Act
-            var instance = activator.Create(actionContext, typeof(DIController));
+            var instance = activator.Create(actionContext);
 
             // Assert
             Assert.Same(controller, instance);
@@ -50,13 +55,17 @@ namespace Microsoft.AspNet.Mvc.Controllers
                 RequestServices = serviceProvider.Object
             };
             var activator = new ServiceBasedControllerActivator();
-            var actionContext = new ActionContext(httpContext,
-                                                  new RouteData(),
-                                                  new ActionDescriptor());
+            var actionContext = new ControllerContext(new ActionContext(
+                httpContext,
+                new RouteData(),
+                new ControllerActionDescriptor
+                {
+                    ControllerTypeInfo = typeof(DIController).GetTypeInfo()
+                }));
 
             // Act and Assert
             var ex = Assert.Throws<InvalidOperationException>(
-                        () => activator.Create(actionContext, typeof(DIController)));
+                        () => activator.Create(actionContext));
             Assert.Equal(expected, ex.Message);
         }
 
