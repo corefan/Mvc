@@ -56,8 +56,8 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
             }
 
             var viewComponent = _typeActivatorCache.CreateInstance<object>(
-            context.ViewContext.HttpContext.RequestServices,
-            context.ViewComponentDescriptor.Type);
+                context.ViewContext.HttpContext.RequestServices,
+                context.ViewComponentDescriptor.Type);
 
             return viewComponent;
         }

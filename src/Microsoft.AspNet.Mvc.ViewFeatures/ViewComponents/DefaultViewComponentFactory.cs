@@ -8,6 +8,9 @@ using Microsoft.Extensions.Internal;
 
 namespace Microsoft.AspNet.Mvc.ViewComponents
 {
+    /// <summary>
+    /// Default implementation for <see cref="IViewComponentFactory"/>.
+    /// </summary>
     public class DefaultViewComponentFactory : IViewComponentFactory
     {
         private readonly IViewComponentActivator _activator;
@@ -31,6 +34,7 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
             _injectActions = new ConcurrentDictionary<Type, PropertyActivator<ViewComponentContext>[]>();
         }
 
+        /// <inheritdoc />
         public object CreateViewComponent(ViewComponentContext context)
         {
             if (context == null)
@@ -67,6 +71,7 @@ namespace Microsoft.AspNet.Mvc.ViewComponents
             return new PropertyActivator<ViewComponentContext>(property, context => context);
         }
 
+        /// <inheritdoc />
         public void ReleaseViewComponent(ViewComponentContext context, object component)
         {
             if (context == null)

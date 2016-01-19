@@ -4,12 +4,12 @@
 namespace Microsoft.AspNet.Mvc.ViewComponents
 {
     /// <summary>
-    /// Provides methods to activate an instantiated ViewComponent
+    /// Provides methods to instantiate and release a ViewComponent.
     /// </summary>
     public interface IViewComponentActivator
     {
         /// <summary>
-        /// Instantiates and activates a ViewComponent.
+        /// Instantiates a ViewComponent.
         /// </summary>
         /// <param name="context">
         /// The <see cref="ViewComponentContext"/> for the executing <see cref="ViewComponent"/>.

@@ -119,11 +119,11 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // View Components
             //
-            services.TryAddSingleton<IViewComponentActivator, DefaultViewComponentActivator>();
             
             // These do caching so they should stay singleton
             services.TryAddSingleton<IViewComponentSelector, DefaultViewComponentSelector>();
             services.TryAddSingleton<IViewComponentFactory, DefaultViewComponentFactory>();
+            services.TryAddSingleton<IViewComponentActivator, DefaultViewComponentActivator>();
             services.TryAddSingleton<
                 IViewComponentDescriptorCollectionProvider,
                 DefaultViewComponentDescriptorCollectionProvider>();
