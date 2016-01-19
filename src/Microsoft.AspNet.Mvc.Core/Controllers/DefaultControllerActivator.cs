@@ -30,21 +30,21 @@ namespace Microsoft.AspNet.Mvc.Controllers
         }
 
         /// <inheritdoc />
-        public virtual object Create(ControllerContext actionContext)
+        public virtual object Create(ControllerContext controllerContext)
         {
-            if (actionContext == null)
+            if (controllerContext == null)
             {
-                throw new ArgumentNullException(nameof(actionContext));
+                throw new ArgumentNullException(nameof(controllerContext));
             }
 
-            if (actionContext.ActionDescriptor == null)
+            if (controllerContext.ActionDescriptor == null)
             {
                 throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
                     nameof(ControllerContext.ActionDescriptor),
                     nameof(ControllerContext)));
             }
 
-            var controllerTypeInfo = actionContext.ActionDescriptor.ControllerTypeInfo;
+            var controllerTypeInfo = controllerContext.ActionDescriptor.ControllerTypeInfo;
             if (controllerTypeInfo.IsValueType ||
                 controllerTypeInfo.IsInterface ||
                 controllerTypeInfo.IsAbstract ||
@@ -57,10 +57,11 @@ namespace Microsoft.AspNet.Mvc.Controllers
                 throw new InvalidOperationException(message);
             }
 
-            var serviceProvider = actionContext.HttpContext.RequestServices;
+            var serviceProvider = controllerContext.HttpContext.RequestServices;
             return _typeActivatorCache.CreateInstance<object>(serviceProvider, controllerTypeInfo.AsType());
         }
 
+        /// <inheritdoc />
         public virtual void Release(ControllerContext context, object controller)
         {
             if (context == null)

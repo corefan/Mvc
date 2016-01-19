@@ -65,7 +65,8 @@ namespace Microsoft.AspNet.Mvc.Controllers
 
             // Act and Assert
             var ex = Assert.Throws<InvalidOperationException>(
-                        () => activator.Create(actionContext));
+                () => activator.Create(actionContext));
+
             Assert.Equal(expected, ex.Message);
         }
 

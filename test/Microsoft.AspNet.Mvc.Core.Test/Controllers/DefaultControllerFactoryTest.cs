@@ -195,7 +195,7 @@ namespace Microsoft.AspNet.Mvc.Controllers
             // Act + Assert
             Assert.False(controller.Disposed);
 
-            factory.ReleaseController(Mock.Of<ControllerContext>(), controller);
+            factory.ReleaseController(new ControllerContext(), controller);
 
             Assert.True(controller.Disposed);
         }

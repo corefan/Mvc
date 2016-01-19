@@ -20,7 +20,7 @@ namespace Microsoft.AspNet.Mvc.Controllers
                 throw new ArgumentNullException(nameof(actionContext));
             }
 
-            var controllerType = actionContext.ActionDescriptor.ControllerTypeInfo?.AsType();
+            var controllerType = actionContext.ActionDescriptor.ControllerTypeInfo.AsType();
 
             return actionContext.HttpContext.RequestServices.GetRequiredService(controllerType);
         }
@@ -28,11 +28,6 @@ namespace Microsoft.AspNet.Mvc.Controllers
         /// <inheritdoc />
         public virtual void Release(ControllerContext context, object controller)
         {
-            var disposable = controller as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
         }
     }
 }

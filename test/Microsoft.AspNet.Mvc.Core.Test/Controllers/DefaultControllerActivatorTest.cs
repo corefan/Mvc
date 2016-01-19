@@ -96,8 +96,8 @@ namespace Microsoft.AspNet.Mvc.Controllers
             var serviceProvider = new Mock<IServiceProvider>(MockBehavior.Strict);
             var testService = new TestService();
             serviceProvider.Setup(s => s.GetService(typeof(TestService)))
-                           .Returns(testService)
-                           .Verifiable();
+                .Returns(testService)
+                .Verifiable();
 
             var httpContext = new DefaultHttpContext
             {
@@ -145,11 +145,11 @@ namespace Microsoft.AspNet.Mvc.Controllers
             var metadataProvider = new EmptyModelMetadataProvider();
             var services = new Mock<IServiceProvider>();
             services.Setup(s => s.GetService(typeof(IUrlHelper)))
-                    .Returns(Mock.Of<IUrlHelper>());
+                .Returns(Mock.Of<IUrlHelper>());
             services.Setup(s => s.GetService(typeof(IModelMetadataProvider)))
-                    .Returns(metadataProvider);
+                .Returns(metadataProvider);
             services.Setup(s => s.GetService(typeof(IObjectModelValidator)))
-                    .Returns(new DefaultObjectValidator(metadataProvider));
+                .Returns(new DefaultObjectValidator(metadataProvider));
             return services.Object;
         }
 
