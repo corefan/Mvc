@@ -3,19 +3,14 @@
 
 using Microsoft.AspNet.Mvc;
 
-namespace MvcSandbox.Controllers
+namespace BasicWebSite.Controllers
 {
-    public class HomeController : Controller
+    public class ModelBindingController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public IActionResult Custom([FromBody] int i)
+        public IActionResult Post([FromBody]int data)
         {
-            return Ok(i);
+            return Ok(data);
         }
     }
 }

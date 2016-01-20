@@ -45,6 +45,9 @@ namespace Microsoft.AspNet.Mvc.Internal
             options.ModelBinders.Add(new GenericModelBinder());
             options.ModelBinders.Add(new MutableObjectModelBinder());
 
+            // Set up filters
+            options.Filters.Add(new UnsupportedContentTypeFilter());
+
             // Set up default output formatters.
             options.OutputFormatters.Add(new HttpNoContentOutputFormatter());
             options.OutputFormatters.Add(new StringOutputFormatter());

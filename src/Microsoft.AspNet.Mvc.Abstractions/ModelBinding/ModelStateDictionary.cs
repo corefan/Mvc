@@ -657,8 +657,19 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             return _innerDictionary.TryGetValue(key, out value);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="ModelStateDictionary"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ModelStateDictionary.Enumerator"/> structure for the <see cref="ModelStateDictionary"/>.
+        /// </returns>
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(_innerDictionary.GetEnumerator());
+        }
+
         /// <inheritdoc />
-        public IEnumerator<KeyValuePair<string, ModelStateEntry>> GetEnumerator()
+        IEnumerator<KeyValuePair<string, ModelStateEntry>> IEnumerable<KeyValuePair<string, ModelStateEntry>>.GetEnumerator()
         {
             return _innerDictionary.GetEnumerator();
         }
@@ -868,6 +879,55 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 _exactMatchUsed = false;
                 _enumerator = default(Dictionary<string, ModelStateEntry>.Enumerator);
                 Current = default(KeyValuePair<string, ModelStateEntry>);
+            }
+
+        }
+
+        /// <summary>
+        /// Enumerates the elements of a <see cref="ModelStateDictionary"/>.
+        /// </summary>
+        public struct Enumerator : IEnumerator<KeyValuePair<string, ModelStateEntry>>
+        {
+            private Dictionary<string, ModelStateEntry>.Enumerator _enumerator;
+
+            internal Enumerator(Dictionary<string, ModelStateEntry>.Enumerator enumerator)
+            {
+                _enumerator = enumerator;
+            }
+
+            /// <inheritdoc />
+            public KeyValuePair<string, ModelStateEntry> Current
+            {
+                get
+                {
+                    return _enumerator.Current;
+                }
+            }
+
+            /// <inheritdoc />
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return _enumerator.Current;
+                }
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                _enumerator.Dispose();
+            }
+
+            /// <inheritdoc />
+            public bool MoveNext()
+            {
+                return _enumerator.MoveNext();
+            }
+
+            /// <inheritdoc />
+            public void Reset()
+            {
             }
         }
     }
